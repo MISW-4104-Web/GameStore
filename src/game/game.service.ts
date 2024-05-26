@@ -3,12 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GameEntity } from './game.entity';
 import { Repository } from 'typeorm';
 import { BusinessError, BusinessLogicException } from '../shared/errors/business-errors';
+import { MinimumSpecEntity } from '../minimum-spec/minimum-spec.entity';
+import { DevelopmentCompanyEntity } from '../development-company/development-company.entity';
 
 @Injectable()
 export class GameService {
     constructor(
         @InjectRepository(GameEntity)
-        private readonly gameRepository: Repository<GameEntity>
+        private readonly gameRepository: Repository<GameEntity>,
+        @InjectRepository(MinimumSpecEntity)
+        private readonly minSpecRepository: Repository<MinimumSpecEntity>,
+        @InjectRepository(DevelopmentCompanyEntity)
+        private readonly devCompRepository: Repository<DevelopmentCompanyEntity>
     ) {}
 
     
@@ -44,6 +50,12 @@ export class GameService {
     }
 
     async create(game: GameEntity): Promise<GameEntity> {
+        const {devComp, minReqs} = await this.validateRelations(game);
+
+        game.developmentCompany = devComp;
+
+        game.minimumRequirements = minReqs;
+
         return await this.gameRepository.save(game);
     }
 
@@ -55,6 +67,12 @@ export class GameService {
         if (!persistedGame) {
             throw new BusinessLogicException("The game with the given id was not found", BusinessError.NOT_FOUND);
         }
+
+        const {devComp, minReqs} = await this.validateRelations(game);
+
+        game.developmentCompany = devComp;
+
+        game.minimumRequirements = minReqs;
 
         return await this.gameRepository.save({...persistedGame, ...game});
     }
@@ -70,5 +88,33 @@ export class GameService {
 
         await this.gameRepository.remove(persistedGame);
     }   
+
+    validateRelations = async (game: GameEntity) => {
+        if (!game.developmentCompany || !game.developmentCompany.id) {
+            throw new BusinessLogicException("The game needs a development company to be created", BusinessError.BAD_REQUEST);
+        }
+
+        const devComp: DevelopmentCompanyEntity =  await this.devCompRepository.findOne({
+            where: {id: game.developmentCompany.id}
+        });
+
+        if (!devComp) {
+            throw new BusinessLogicException("The development company with the given id was not found", BusinessError.NOT_FOUND);
+        }
+
+        if (!game.minimumRequirements || !game.minimumRequirements.id) {
+            throw new BusinessLogicException("The game needs minimum requirements to be created", BusinessError.BAD_REQUEST);
+        }
+
+        const minReqs: MinimumSpecEntity = await this.minSpecRepository.findOne({
+            where: {id: game.minimumRequirements.id}
+        });
+
+        if (!minReqs) {
+            throw new BusinessLogicException("The minimum requirements with the given id was not found", BusinessError.NOT_FOUND);
+        }
+
+        return {devComp, minReqs};
+    }
 
 }

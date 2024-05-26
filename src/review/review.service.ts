@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewEntity } from './review.entity';
 import { Repository } from 'typeorm';
 import { BusinessError, BusinessLogicException } from '../shared/errors/business-errors';
+import { GameEntity } from '../game/game.entity';
 
 @Injectable()
 export class ReviewService {
     constructor(
         @InjectRepository(ReviewEntity)
-        private readonly reviewRepository: Repository<ReviewEntity>
+        private readonly reviewRepository: Repository<ReviewEntity>,
+        @InjectRepository(GameEntity)
+        private readonly gameRepository: Repository<GameEntity>
     ) {}
         
     async findAll(): Promise<ReviewEntity[]> {
@@ -41,6 +44,11 @@ export class ReviewService {
     }
 
     async create(review: ReviewEntity): Promise<ReviewEntity> {
+
+        const game: GameEntity = await this.validateRelations(review);
+
+        review.game = game;
+
         return await this.reviewRepository.save(review);
     }
 
@@ -52,6 +60,10 @@ export class ReviewService {
         if (!persistedReview) {
             throw new BusinessLogicException("The review with the given id was not found", BusinessError.NOT_FOUND);
         }
+
+        const game: GameEntity = await this.validateRelations(review);
+
+        review.game = game;
 
         return await this.reviewRepository.save({...persistedReview, ...review});
     }
@@ -67,5 +79,21 @@ export class ReviewService {
 
         await this.reviewRepository.remove(persistedReview);
     }   
+
+    validateRelations = async (review: ReviewEntity) => {
+        if (!review.game || !review.game.id) {
+            throw new BusinessLogicException("The review needs an game to be created", BusinessError.BAD_REQUEST);
+        }
+
+        const game: GameEntity =  await this.gameRepository.findOne({
+            where: {id: review.game.id}
+        });
+
+        if (!game) {
+            throw new BusinessLogicException("The game with the given id was not found", BusinessError.NOT_FOUND);
+        }
+
+        return game;
+    }
 
 }
