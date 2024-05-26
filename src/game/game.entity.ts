@@ -37,6 +37,6 @@ export class GameEntity {
     @OneToMany(() => AwardEntity, award => award.game)
     awards: AwardEntity[];
 
-    @OneToMany(() => ReviewEntity, review => review.game)
+    @OneToMany(() => ReviewEntity, review => review.game,  { cascade: true })
     reviews: ReviewEntity[];
 }

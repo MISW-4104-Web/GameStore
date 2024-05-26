@@ -18,6 +18,6 @@ export class ReviewEntity {
     @Column()
     author: string;
 
-    @ManyToOne(() => GameEntity, game => game.reviews)
+    @ManyToOne(() => GameEntity, game => game.reviews, { onDelete: 'CASCADE' })
     game: GameEntity;
 }
