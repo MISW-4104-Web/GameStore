@@ -91,7 +91,7 @@ export class TagGameService {
         return await this.tagRepository.save(tag);
       }
 
-    async deleteGameFromTag(gameId: string, tagId: string){
+    async deleteGameFromTag(tagId: string, gameId: string){
         const game: GameEntity = await this.gameRepository.findOne({ where: { id: gameId } });
         if (!game) {
             throw new BusinessLogicException("The game with the given id was not found", BusinessError.NOT_FOUND);
