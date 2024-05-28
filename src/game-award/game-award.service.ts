@@ -89,10 +89,10 @@ export class GameAwardService {
         }
     
         game.awards = awards;
-        return await this.awardRepository.save(game);
+        return await this.gameRepository.save(game);
       }
 
-    async deleteAwardFromGame(awardId: string, gameId: string){
+    async deleteAwardFromGame(gameId: string, awardId: string){
         const award: AwardEntity = await this.awardRepository.findOne({ where: { id: awardId } });
         if (!award) {
             throw new BusinessLogicException("The award with the given id was not found", BusinessError.NOT_FOUND);
