@@ -147,9 +147,9 @@ describe('TagGameService', () => {
     await expect(() => service.findGamesByTagId("0")).rejects.toHaveProperty('message', 'The tag with the given id was not found');
   });
 
-  it('findGameByTagIdgameId should return a game associated with a tag', async () => {
+  it('findGameByTagIdGameId should return a game associated with a tag', async () => {
     const game: GameEntity = gameList[0];
-    const returnedGame: GameEntity = await service.findGameByTagIdgameId(tag.id, game.id);
+    const returnedGame: GameEntity = await service.findGameByTagIdGameId(tag.id, game.id);
     expect(returnedGame).not.toBeNull();
 
     expect(returnedGame.title).toEqual(game.title);
@@ -159,16 +159,16 @@ describe('TagGameService', () => {
     expect(returnedGame.price).toEqual(game.price);
   });
 
-  it('findGameByTagIdgameId should raise an exception when the tag does not exist', async () => {
+  it('findGameByTagIdGameId should raise an exception when the tag does not exist', async () => {
     const game: GameEntity = gameList[0];
-    await expect(() => service.findGameByTagIdgameId("0", game.id)).rejects.toHaveProperty('message', 'The tag with the given id was not found');
+    await expect(() => service.findGameByTagIdGameId("0", game.id)).rejects.toHaveProperty('message', 'The tag with the given id was not found');
   });
 
-  it('findGameByTagIdgameId should raise an exception when the game does not exist', async () => {
-    await expect(() => service.findGameByTagIdgameId(tag.id, "0")).rejects.toHaveProperty('message', 'The game with the given id was not found');
+  it('findGameByTagIdGameId should raise an exception when the game does not exist', async () => {
+    await expect(() => service.findGameByTagIdGameId(tag.id, "0")).rejects.toHaveProperty('message', 'The game with the given id was not found');
   });
 
-  it('findGameByTagIdgameId should raise an exception when the game is not associated with the tag', async () => {
+  it('findGameByTagIdGameId should raise an exception when the game is not associated with the tag', async () => {
     const game: GameEntity = await gameRepository.save({
       title: faker.company.name(),
       releaseDate: faker.date.past(),
@@ -178,7 +178,7 @@ describe('TagGameService', () => {
       minimumRequirements: minimumSpec,
       price: faker.number.int(),
     });
-    await expect(() => service.findGameByTagIdgameId(tag.id, game.id)).rejects.toHaveProperty('message', 'The game with the given id is not associated to the tag');
+    await expect(() => service.findGameByTagIdGameId(tag.id, game.id)).rejects.toHaveProperty('message', 'The game with the given id is not associated to the tag');
   });
 
   it('updateGamesFromTag should update the games associated with a tag', async () => {
