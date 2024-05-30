@@ -180,7 +180,7 @@ describe('ReviewService', () => {
         tags: []
       }
     }
-    await expect(() => service.create(review)).rejects.toHaveProperty("message", "The review needs an game to be created or updated");
+    await expect(() => service.create(review)).rejects.toHaveProperty("message", "The review needs a game to be created or updated");
   });
 
   it('Update should persist changes on a review', async () => {
@@ -255,7 +255,7 @@ describe('ReviewService', () => {
       reviews: [],
       tags: []
     }
-    await expect(() => service.update(review.id, review)).rejects.toHaveProperty("message", "The review needs an game to be created or updated");
+    await expect(() => service.update(review.id, review)).rejects.toHaveProperty("message", "The review needs a game to be created or updated");
   });
 
   it('Update on an invalid review should raise an exception', async () => {

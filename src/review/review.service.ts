@@ -82,7 +82,7 @@ export class ReviewService {
 
     validateRelations = async (review: ReviewEntity) => {
         if (!review.game || !review.game.id) {
-            throw new BusinessLogicException("The review needs an game to be created or updated", BusinessError.BAD_REQUEST);
+            throw new BusinessLogicException("The review needs a game to be created or updated", BusinessError.BAD_REQUEST);
         }
 
         const game: GameEntity =  await this.gameRepository.findOne({
