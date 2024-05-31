@@ -1,4 +1,6 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsObject, IsString } from "class-validator";
+import { DevelopmentCompanyDto } from "../development-company/development-company.dto";
+import { MinimumSpecDto } from "../minimum-spec/minimum-spec.dto";
 
 export class GameDto {
 
@@ -24,10 +26,10 @@ export class GameDto {
 
     @IsNotEmpty()
     @IsObject()
-    readonly minimumRequirements: object;
+    readonly minimumRequirements: MinimumSpecDto;
 
     @IsNotEmpty()
     @IsObject()
-    readonly developmentCompany: object;
+    readonly developmentCompany: DevelopmentCompanyDto;
 
 }

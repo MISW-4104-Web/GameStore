@@ -1,4 +1,5 @@
 import { IsBoolean, IsDateString, IsNotEmpty, IsObject, IsString } from "class-validator";
+import { GameDto } from "../game/game.dto";
 
 export class ReviewDto {
 
@@ -20,5 +21,5 @@ export class ReviewDto {
 
     @IsNotEmpty()
     @IsObject()
-    readonly game: object;
+    readonly game: GameDto;
 }
