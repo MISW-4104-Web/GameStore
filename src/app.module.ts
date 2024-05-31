@@ -22,7 +22,7 @@ import { MinimumSpecModule } from './minimum-spec/minimum-spec.module';
   imports: [GameModule, TagModule, GameTagModule, TagGameModule, ReviewModule, DevelopmentCompanyModule, MinimumSpecModule, AwardModule, GameAwardModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DB_HOST || 'localhost',
       port: 5432,
       username: 'postgres',
       password: 'postgres',
